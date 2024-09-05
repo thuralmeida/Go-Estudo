@@ -2,9 +2,9 @@ package db
 
 import (
 	"database/sql"
+
 	_ "github.com/lib/pq"
 )
-
 
 func conexaoBancoDados() *sql.DB {
 	conexao := "user=postgres dbname=Go_Teste password=123456 host=localhost sslmode=disable"
