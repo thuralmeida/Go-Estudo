@@ -6,7 +6,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func conexaoBancoDados() *sql.DB {
+func ConexaoBancoDados() *sql.DB {
 	conexao := "user=postgres dbname=Go_Teste password=123456 host=localhost sslmode=disable"
 	db, err := sql.Open("postgres", conexao)
 	if err != nil {

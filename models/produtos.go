@@ -1,5 +1,9 @@
 package models
 
+import (
+	"teste/db"
+)
+
 type Produto struct {
 	Nome       string
 	Descricao  string
@@ -8,7 +12,7 @@ type Produto struct {
 }
 
 func BuscaTodosProdutos() []Produto {
-	db := db.conexaoBancoDados
+	db := db.ConexaoBancoDados()
 
 	selectTodosProdutos, err := db.Query("Select * from produtos")
 	if err != nil {
