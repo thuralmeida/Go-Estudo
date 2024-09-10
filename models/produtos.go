@@ -5,6 +5,7 @@ import (
 )
 
 type Produto struct {
+	Id         int
 	Nome       string
 	Descricao  string
 	Preco      float64
@@ -32,6 +33,7 @@ func BuscaTodosProdutos() []Produto {
 			continue
 		}
 
+		p.Id = id
 		p.Nome = nome
 		p.Descricao = descricao
 		p.Preco = preco
@@ -42,4 +44,40 @@ func BuscaTodosProdutos() []Produto {
 
 	defer db.Close()
 	return produtos
+}
+
+func CriarNovoProduto(nome, descricao string, preco float64, quantidade int) {
+	db := db.ConexaoBancoDados()
+
+	insereDadosBanco, err := db.Prepare("Insert Into Produtos (nome, descricao, preco, quantidade) values ($1, $2, $3, $4)")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	insereDadosBanco.Exec(nome, descricao, preco, quantidade)
+	defer db.Close()
+}
+
+func DeletaProduto(id string) {
+	db := db.ConexaoBancoDados()
+
+	deletaProdutoBanco, err := db.Prepare("Delete From Produtos where id = $1")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	deletaProdutoBanco.Exec(id)
+	defer db.Close()
+}
+
+func AtualizaProduto(nome, descricao, id string, preco float64, quantidade int) {
+	db := db.ConexaoBancoDados()
+
+	atualizaProdutoBanco, err := db.Prepare("update Produtos set nome=$1, descricao=$2, quantidade=$3, preco=$4 where id = $5")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	atualizaProdutoBanco.Exec(nome, descricao, quantidade, preco, id)
+	defer db.Close()
 }
