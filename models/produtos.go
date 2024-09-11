@@ -46,6 +46,37 @@ func BuscaTodosProdutos() []Produto {
 	return produtos
 }
 
+func BuscaProduto(idProduto string) Produto {
+	db := db.ConexaoBancoDados()
+
+	selectProduto, err := db.Query("Select * from produtos where id = $1 limit 1", idProduto)
+	if err != nil {
+		panic(err.Error())
+	}
+	p := Produto{}
+
+	for selectProduto.Next() {
+
+		var id, quantidade int
+		var nome, descricao string
+		var preco float64
+
+		err := selectProduto.Scan(&id, &nome, &descricao, &preco, &quantidade)
+		if err != nil {
+			continue
+		}
+
+		p.Id = id
+		p.Nome = nome
+		p.Descricao = descricao
+		p.Preco = preco
+		p.Quantidade = quantidade
+	}
+
+	defer db.Close()
+	return p
+}
+
 func CriarNovoProduto(nome, descricao string, preco float64, quantidade int) {
 	db := db.ConexaoBancoDados()
 
@@ -70,7 +101,7 @@ func DeletaProduto(id string) {
 	defer db.Close()
 }
 
-func AtualizaProduto(nome, descricao, id string, preco float64, quantidade int) {
+func AtualizaProduto(nome, descricao string, preco float64, quantidade, id int) {
 	db := db.ConexaoBancoDados()
 
 	atualizaProdutoBanco, err := db.Prepare("update Produtos set nome=$1, descricao=$2, quantidade=$3, preco=$4 where id = $5")
